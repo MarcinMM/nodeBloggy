@@ -7,6 +7,30 @@ var express = require('express');
 
 var app = module.exports = express.createServer();
 
+// DB Setup (mongo)
+
+
+var mongoose = require('mongoose');
+
+var Schema = mongoose.Schema
+  , ObjectId = Schema.ObjectId;
+
+var BlogPost = new Schema({
+    header    : String
+  , content   : String
+  , date      : Date
+});
+
+var bloggy = mongoose.model('bloggy', BlogPost);
+var output = '';
+
+var db = mongoose.connect('mongodb://localhost/codesquares');
+
+bloggy.find({}, function (err, docs) {
+  output += docs.content;
+});
+
+
 // Configuration
 
 app.configure(function(){
@@ -30,7 +54,9 @@ app.configure('production', function(){
 
 app.get('/', function(req, res){
   res.render('index', {
-    title: 'Express'
+    title: 'Code Squares',
+    content: "Immature Technologies!",
+    output: output
   });
 });
 
