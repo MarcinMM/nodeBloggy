@@ -44,11 +44,15 @@ codesquares = {
       cs.app.use(cs.express.errorHandler()); 
     });
 
+    cs.app.listen(3000);
+    console.log("Express server listening on port %d in %s mode", cs.app.address().port, cs.app.settings.env);
   },
   
   fetch: function() {
     var cs = codesquares;
     new cs.mongodb.Db('codesquares', cs.server, {}).open(function (error, client) {
+      var cs = codesquares;
+      cs.output = [];
       if (error) throw error;
       var collection = new cs.mongodb.Collection(client, 'posts');
       collection.find({}, {limit:10, header: !undefined}).toArray(function(err, docs) {
@@ -56,31 +60,32 @@ codesquares = {
             outputHolder = { header : docs[i].header, content: docs[i].content };
             cs.output.push(outputHolder);
         }
-        console.log('inside');
-        console.log(cs.output);
       });
     });
+    console.log(cs.output);
   },
   
   postList: function() {
     var cs = codesquares;
     cs.app.get('/', function(req, res){
+      cs.fetch();
       res.render('index', {
         title: 'Code Squares',
         content: "Immature Technologies!",
         output: cs.output
       });
     });
-
-    cs.app.listen(3000);
-    console.log("Express server listening on port %d in %s mode", cs.app.address().port, cs.app.settings.env);
-  },
-  
+  }
 }
 
-codesquares.init();
-codesquares.fetch();
-codesquares.postList();
+
+var cs = codesquares;
+cs.init();
+cs.fetch();
+cs.postList();
+
+
+
 
 /*
 var client = new Db('posts', new Server("127.0.0.1", 27017, {})),
