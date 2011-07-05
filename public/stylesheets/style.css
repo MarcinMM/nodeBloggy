@@ -17,6 +17,23 @@ h1 {
   font-size: 60px;
 }
 
+#tags {
+  width: 200px;
+  float: right;
+  border-left: 3px solid #bbb;
+  margin-left: 20px;
+}
+
+#tagHeader {
+  font-weight: bold;
+  font-size: 22px;
+}
+
+#tags .tag {
+  font-size: 16px;
+  line-height: 150%;
+}
+
 #articles {
   text-align: left;
   margin-left: auto;

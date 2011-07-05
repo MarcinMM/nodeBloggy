@@ -1,5 +1,10 @@
 
 h1= title
+
+#tags
+    #tagHeader Tags
+    - for (var key in tags)
+        .tag= tags[key]
 #articles
     - for (var key in output)
         .article

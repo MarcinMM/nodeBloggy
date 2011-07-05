@@ -24,6 +24,7 @@ codesquares = {
     cs.express = require('express');
     cs.app = cs.express.createServer();
     cs.mongodb = require('mongodb');
+    cs.step = require('step');
     cs.server = new cs.mongodb.Server("127.0.0.1", 27017, {});
 
     cs.app.configure(function(){
@@ -52,7 +53,8 @@ codesquares = {
         res.render('index', {
           title: 'Code Squares',
           content: "Immature Technologies!",
-          output: response
+          output: response.page,
+          tags: response.tags
         });
       });
     });
@@ -62,7 +64,8 @@ codesquares = {
         res.render('index', {
           title: 'Code Squares by Tag',
           content: "Immature Technologies!",
-          output: response
+          output: response.page,
+          tags: response.tags
         });
       });
     });
@@ -72,7 +75,8 @@ codesquares = {
         res.render('index', {
           title: 'Code Squares by Post',
           content: "Immature Technologies!",
-          output: response
+          output: response.page,
+          tags: response.tags
         });
       });
     });
@@ -83,14 +87,12 @@ codesquares = {
     
   },
   
-  fetch: function(mode, queryString, callback) {
-    var cs = codesquares;
-    new cs.mongodb.Db('codesquares', cs.server, {}).open(function (error, client) {
+  fetch: function(mode, queryString, theCallback) {
+    var pageContent = [];
+    new cs.mongodb.Db('codesquares', cs.server, {}).open(function (error, client) {  
       if (error) throw error;
-      // init vars
-      var cs = codesquares;
+
       var tags = '';
-      var output = [];
       var params;
       if (mode == 'tag') {
         params = { tags: queryString };
@@ -99,19 +101,47 @@ codesquares = {
       } else {
         params = {};
       }
-      // make mongo call
+
       var collection = new cs.mongodb.Collection(client, 'posts');
-      collection.find(params, {limit:10}).toArray(function(err, docs) {
-        for (var i in docs) {
-            tags = '';
-            for (var j in docs[i].tags) {
-              tags += docs[i].tags[j] + ' ';
+
+      cs.step(
+        function getPageInfo() {
+          var callback = this.parallel();
+          var callback2 = this.parallel();
+          // collect page contents such as headers and contents, by params
+          collection.find(params, {limit:10}).toArray(function(err, docs) {
+            var posts = [];
+            for (var i in docs) {
+                tags = '';
+                for (var j in docs[i].tags) {
+                  tags += docs[i].tags[j] + ' ';
+                }
+                outputHolder = { header : docs[i].header, content: docs[i].content, tags: tags };
+                posts.push(outputHolder);
             }
-            outputHolder = { header : docs[i].header, content: docs[i].content, tags: tags };
-            output.push(outputHolder);
+            callback(null, posts);
+          });
+          // now tags
+          collection.find({ tags: {$exists: true}}, { tags: 1, _id: 0 } , {limit:10}).toArray(function(err, docs) {
+            var tags = [];
+            for (var i in docs) {
+                for (var j in docs[i].tags) {
+                  if (tags.indexOf(docs[i].tags[j]) == -1) {
+                    tags.push(docs[i].tags[j]); 
+                  } 
+                }
+            }
+            callback2(null, tags);
+          });
+          // more?
+        },
+        function render(err, data1, data2) {
+          if (err) throw err;
+          // now I want everything from above
+          var output = { page: data1, 'tags': data2 };
+          theCallback(output);
         }
-        callback(output);
-      });
+      );
     });
   },    
 }
@@ -119,45 +149,3 @@ codesquares = {
 
 var cs = codesquares;
 cs.init();
-
-/*
-var client = new Db('posts', new Server("127.0.0.1", 27017, {})),
-    test = function (err, collection) {
-      collection.insert({a:2}, function(err, docs) {
-        // Locate all the entries using find
-        collection.find().toArray(function(err, results) {
-          console.log(results);
-          // Let's close the db
-          client.close();
-        });
-      });
-    };
-*/
-/*
-client.open(function(err, p_client) {
-  client.collection('test_insert', test);
-});
-*/
-
-/*
-var mongoose = require('mongoose');
-
-var Schema = mongoose.Schema
-  , ObjectId = Schema.ObjectId;
-
-var BlogPost = new Schema({
-    header    : String
-  , content   : String
-  , date      : Date
-});
-
-var bloggy = mongoose.model('bloggy', BlogPost);
-var output = '';
-
-var db = mongoose.connect('mongodb://localhost/codesquares');
-
-bloggy.find({}, function (err, docs) {
-  output += docs.content;
-});
-*/
-
