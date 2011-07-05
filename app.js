@@ -76,62 +76,44 @@ codesquares = {
         });
       });
     });
+    
+    cs.app.post('/posts', function(req, res) {
+      console.log(req.body);
+    });
+    
   },
   
   fetch: function(mode, queryString, callback) {
     var cs = codesquares;
     new cs.mongodb.Db('codesquares', cs.server, {}).open(function (error, client) {
+      if (error) throw error;
+      // init vars
       var cs = codesquares;
       var tags = '';
       var output = [];
-      if (error) throw error;
-      var collection = new cs.mongodb.Collection(client, 'posts');
+      var params;
       if (mode == 'tag') {
-        collection.find({tags: queryString}, {limit:10}).toArray(function(err, docs) {
-          for (var i in docs) {
-              tags = '';
-              for (var j in docs[i].tags) {
-                tags += docs[i].tags[j] + ' ';
-              }
-              outputHolder = { header : docs[i].header, content: docs[i].content, tags: tags };
-              output.push(outputHolder);
-          }
-          callback(output);
-        });
+        params = { tags: queryString };
       } else if (mode == 'post') {
-        collection.find({hashURL: queryString}, {limit:10}).toArray(function(err, docs) {
-          for (var i in docs) {
-              tags = '';
-              for (var j in docs[i].tags) {
-                tags += docs[i].tags[j] + ' ';
-              }
-              outputHolder = { header : docs[i].header, content: docs[i].content, tags: tags };
-              output.push(outputHolder);
-          }
-          callback(output);
-        });        
+        params = { hashURL: queryString };
       } else {
-        collection.find({}, {limit:10}).toArray(function(err, docs) {
-          for (var i in docs) {
-              tags = '';
-              for (var j in docs[i].tags) {
-                tags += docs[i].tags[j] + ' ';
-              }
-              outputHolder = { header : docs[i].header, content: docs[i].content, tags: tags };
-              output.push(outputHolder);
-          }
-          console.log(output);
-          callback(output);
-        }); 
+        params = {};
       }
+      // make mongo call
+      var collection = new cs.mongodb.Collection(client, 'posts');
+      collection.find(params, {limit:10}).toArray(function(err, docs) {
+        for (var i in docs) {
+            tags = '';
+            for (var j in docs[i].tags) {
+              tags += docs[i].tags[j] + ' ';
+            }
+            outputHolder = { header : docs[i].header, content: docs[i].content, tags: tags };
+            output.push(outputHolder);
+        }
+        callback(output);
+      });
     });
-  },
-    
-  sendPost: function() {
-    cs.app.post('/posts', function(req, res) {
-      console.log(req.body);
-    });
-  }
+  },    
 }
 
 
