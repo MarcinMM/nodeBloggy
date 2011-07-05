@@ -14,7 +14,6 @@ var outputHolder;
 
 codesquares = {
 
-  output: [],
   mongodb: '',
   server: '',
   app: '',
@@ -32,6 +31,7 @@ codesquares = {
       cs.app.set('view engine', 'jade');
       cs.app.use(cs.express.bodyParser());
       cs.app.use(cs.express.methodOverride());
+      //cs.app.use(cs.express.compiler({ src: __dirname + '/views', enable: ['sass']}));
       cs.app.use(cs.app.router);
       cs.app.use(cs.express.static(__dirname + '/public'));
     });
@@ -46,34 +46,90 @@ codesquares = {
 
     cs.app.listen(3000);
     console.log("Express server listening on port %d in %s mode", cs.app.address().port, cs.app.settings.env);
+
+    cs.app.get('/', function(req, res) {
+      cs.fetch(0,0, function(response) {
+        res.render('index', {
+          title: 'Code Squares',
+          content: "Immature Technologies!",
+          output: response
+        });
+      });
+    });
+
+    cs.app.get('/tags/:tag([0-9a-zA-Z]+)', function(req, res){
+      cs.fetch('tag', req.params.tag, function(response) {
+        res.render('index', {
+          title: 'Code Squares by Tag',
+          content: "Immature Technologies!",
+          output: response
+        });
+      });
+    });
+
+    cs.app.get('/post/:post([0-9a-zA-Z-]+)', function(req, res){
+      cs.fetch('post', req.params.post, function(response) {
+        res.render('index', {
+          title: 'Code Squares by Post',
+          content: "Immature Technologies!",
+          output: response
+        });
+      });
+    });
   },
   
-  fetch: function() {
+  fetch: function(mode, queryString, callback) {
     var cs = codesquares;
     new cs.mongodb.Db('codesquares', cs.server, {}).open(function (error, client) {
       var cs = codesquares;
-      cs.output = [];
+      var tags = '';
+      var output = [];
       if (error) throw error;
       var collection = new cs.mongodb.Collection(client, 'posts');
-      collection.find({}, {limit:10, header: !undefined}).toArray(function(err, docs) {
-        for (var i in docs) {
-            outputHolder = { header : docs[i].header, content: docs[i].content };
-            cs.output.push(outputHolder);
-        }
-      });
+      if (mode == 'tag') {
+        collection.find({tags: queryString}, {limit:10}).toArray(function(err, docs) {
+          for (var i in docs) {
+              tags = '';
+              for (var j in docs[i].tags) {
+                tags += docs[i].tags[j] + ' ';
+              }
+              outputHolder = { header : docs[i].header, content: docs[i].content, tags: tags };
+              output.push(outputHolder);
+          }
+          callback(output);
+        });
+      } else if (mode == 'post') {
+        collection.find({hashURL: queryString}, {limit:10}).toArray(function(err, docs) {
+          for (var i in docs) {
+              tags = '';
+              for (var j in docs[i].tags) {
+                tags += docs[i].tags[j] + ' ';
+              }
+              outputHolder = { header : docs[i].header, content: docs[i].content, tags: tags };
+              output.push(outputHolder);
+          }
+          callback(output);
+        });        
+      } else {
+        collection.find({}, {limit:10}).toArray(function(err, docs) {
+          for (var i in docs) {
+              tags = '';
+              for (var j in docs[i].tags) {
+                tags += docs[i].tags[j] + ' ';
+              }
+              outputHolder = { header : docs[i].header, content: docs[i].content, tags: tags };
+              output.push(outputHolder);
+          }
+          console.log(output);
+          callback(output);
+        }); 
+      }
     });
-    console.log(cs.output);
   },
-  
-  postList: function() {
-    var cs = codesquares;
-    cs.app.get('/', function(req, res){
-      cs.fetch();
-      res.render('index', {
-        title: 'Code Squares',
-        content: "Immature Technologies!",
-        output: cs.output
-      });
+    
+  sendPost: function() {
+    cs.app.post('/posts', function(req, res) {
+      console.log(req.body);
     });
   }
 }
@@ -81,11 +137,6 @@ codesquares = {
 
 var cs = codesquares;
 cs.init();
-cs.fetch();
-cs.postList();
-
-
-
 
 /*
 var client = new Db('posts', new Server("127.0.0.1", 27017, {})),

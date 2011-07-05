@@ -1,5 +1,9 @@
+
 h1= title
-#debug
-- for (var key in output)
-  h2= output[key].header
-    p= output[key].content
+#articles
+    - for (var key in output)
+        .article
+            .title= output[key].header
+                .tags Tags:
+                    = output[key].tags
+            .body= output[key].content
