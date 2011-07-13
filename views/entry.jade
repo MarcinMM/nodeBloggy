@@ -5,6 +5,8 @@ h1 Simplest Entry Form Ever
     form(action='/posts', method='POST')
         p Header: 
             input(name='header', id='header', type='text', size='100')
+        p Tags: 
+            input(name='tags', id='tags', type='text', size='100')
         p Content: 
             textarea(name='content', id='content', cols=80, rows=10)
         p Auth: 

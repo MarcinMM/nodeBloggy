@@ -109,7 +109,8 @@ codesquares = {
       var newEntry = {
         "header" : contents.header,
         "content" : contents.content,
-        "time": timestamp
+        "time": timestamp.toString(),
+        "tags": contents.tags.split(" ")
       };
       collection.insert(newEntry, function(err, docs) {
         client.close();
@@ -139,7 +140,7 @@ codesquares = {
           var callback = this.parallel();
           var callback2 = this.parallel();
           // collect page contents such as headers and contents, by params
-          collection.find(params, {limit:10, sort:['time', 'desc']}).toArray(function(err, docs) {
+          collection.find(params, {limit:10, sort:[['time', 'desc']]}).toArray(function(err, docs) {
             var posts = [];
             for (var i in docs) {
                 tags = '';
@@ -149,7 +150,7 @@ codesquares = {
                 outputHolder = { header : docs[i].header, content: docs[i].content, tags: tags };
                 posts.push(outputHolder);
             }
-            callback(null, posts.reverse());
+            callback(null, posts);
           });
           // now tags
           collection.find({ tags: {$exists: true}}, { tags: 1, _id: 0 } , {limit:10}).toArray(function(err, docs) {
