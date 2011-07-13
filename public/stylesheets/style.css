@@ -38,19 +38,29 @@ h1 {
   text-align: left;
   margin-left: auto;
   margin-right: auto;
-  width: 520px;
+  width: 720px;
 }
 
 #articles .article {
   margin: 20px;
 }
 
+#articles .article .tags {
+  font-style: italic;
+  padding: 3px;
+  font-size: 90%;
+}
+
 #articles .article .title {
+  padding: 5px;
+  padding-left: 3px;
   font-weight: bold;
+  font-size: 120%;
   text-decoration: underline;
   background-color: #eee;
 }
 
 #articles .article .body {
-  background-color: #ffa;
+  padding: 5px;
+  line-height: 110%;
 }

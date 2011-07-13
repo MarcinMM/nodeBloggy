@@ -4,11 +4,14 @@ h1= title
 #tags
     #tagHeader Tags
     - for (var key in tags)
-        .tag= tags[key]
+        .tag
+            a(href='/tags/'+tags[key])= tags[key]
+    .tag
+        a(href='/') all
 #articles
     - for (var key in output)
         .article
             .title= output[key].header
-                .tags Tags:
-                    = output[key].tags
+            .tags Tags:
+                = output[key].tags
             .body= output[key].content

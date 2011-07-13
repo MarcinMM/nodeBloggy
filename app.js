@@ -81,10 +81,40 @@ codesquares = {
       });
     });
     
-    cs.app.post('/posts', function(req, res) {
-      console.log(req.body);
+    cs.app.get('/entry', function(req, res) {
+      res.render('entry', {
+        title: "Simplest Entry Form Ever"
+      });
     });
     
+    cs.app.post('/posts', function(req, res) {
+      if (req.body.password == 'asdfaq1234') {
+        cs.save(req.body);
+        res.redirect('/');
+      } else {
+        res.redirect('/');
+      }
+    });
+    
+  },
+  
+  save: function(contents) {
+    cs.server = new cs.mongodb.Server("127.0.0.1", 27017, {});
+
+    new cs.mongodb.Db('codesquares', cs.server, {}).open(function (error, client) {  
+      if (error) throw error;
+      var collection = new cs.mongodb.Collection(client, 'posts');
+      var timestamp = new Date().getTime();
+      timestamp = Number(timestamp);
+      var newEntry = {
+        "header" : contents.header,
+        "content" : contents.content,
+        "time": timestamp
+      };
+      collection.insert(newEntry, function(err, docs) {
+        client.close();
+      });
+    });
   },
   
   fetch: function(mode, queryString, theCallback) {
@@ -109,7 +139,7 @@ codesquares = {
           var callback = this.parallel();
           var callback2 = this.parallel();
           // collect page contents such as headers and contents, by params
-          collection.find(params, {limit:10}).toArray(function(err, docs) {
+          collection.find(params, {limit:10, sort:['time', 'desc']}).toArray(function(err, docs) {
             var posts = [];
             for (var i in docs) {
                 tags = '';
@@ -119,7 +149,7 @@ codesquares = {
                 outputHolder = { header : docs[i].header, content: docs[i].content, tags: tags };
                 posts.push(outputHolder);
             }
-            callback(null, posts);
+            callback(null, posts.reverse());
           });
           // now tags
           collection.find({ tags: {$exists: true}}, { tags: 1, _id: 0 } , {limit:10}).toArray(function(err, docs) {
@@ -143,9 +173,8 @@ codesquares = {
         }
       );
     });
-  },    
+  }
 }
-
 
 var cs = codesquares;
 cs.init();
