@@ -104,7 +104,7 @@ codesquares = {
     new cs.mongodb.Db('codesquares', cs.server, {}).open(function (error, client) {  
       if (error) throw error;
       var collection = new cs.mongodb.Collection(client, 'posts');
-      var content = contents.content.replace(/(\r\n|\n|\r)/gm,"<br>");
+      var content = cs.cleanup(contents.content);
       var timestamp = new Date().getTime();
       timestamp = Number(timestamp);
       var newEntry = {
@@ -148,9 +148,7 @@ codesquares = {
                 for (var j in docs[i].tags) {
                   tags += docs[i].tags[j] + ' ';
                 }
-                var content = docs[i].content.replace(/(\r\n|\n|\r)/gm,"<br>");
-                content = cs.linkify(content);
-                outputHolder = { header : docs[i].header, content: content, tags: tags };
+                outputHolder = { header : docs[i].header, content: docs[i].content, tags: tags };
                 posts.push(outputHolder);
             }
             callback(null, posts);
@@ -179,9 +177,12 @@ codesquares = {
     });
   },
   
-  linkify: function(text) {
-    var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
-    return text.replace(exp,"<b>[</b><a href='$1'>$1</a><b>]</b>");
+  cleanup: function(text) {
+    var exp = /(\b(http(s?):\/\/)(www\.)?)([\w\.-]+)([\.{2,4}\/?])([\S]*)/ig;
+    text = text.replace("<", "&lt;");
+    text = text.replace(">", "&gt;");
+    text = text.replace(/(\r\n|\n|\r)/gm,"<br>");
+    return text.replace(exp,"<b>[</b><a href='http$3://$4$5$6$7'>$5</a><b>]</b>");
   }
 }
 
