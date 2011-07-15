@@ -51,7 +51,7 @@ codesquares = {
     cs.app.get('/', function(req, res) {
       cs.fetch(0,0, function(response) {
         res.render('index', {
-          title: 'Code Squares',
+          title: 'Code [][]',
           content: "Immature Technologies!",
           output: response.page,
           tags: response.tags
@@ -62,7 +62,7 @@ codesquares = {
     cs.app.get('/tags/:tag([0-9a-zA-Z]+)', function(req, res){
       cs.fetch('tag', req.params.tag, function(response) {
         res.render('index', {
-          title: 'Code Squares by Tag',
+          title: 'Code [][] by Tag',
           content: "Immature Technologies!",
           output: response.page,
           tags: response.tags
@@ -73,7 +73,7 @@ codesquares = {
     cs.app.get('/post/:post([0-9a-zA-Z-]+)', function(req, res){
       cs.fetch('post', req.params.post, function(response) {
         res.render('index', {
-          title: 'Code Squares by Post',
+          title: 'Code [][] by Post',
           content: "Immature Technologies!",
           output: response.page,
           tags: response.tags
@@ -88,7 +88,7 @@ codesquares = {
     });
     
     cs.app.post('/posts', function(req, res) {
-      if (req.body.password == 'asdfaq1234') {
+      if (req.body.password == 'asdfaqasdfaq4321') {
         cs.save(req.body);
         res.redirect('/');
       } else {
@@ -104,11 +104,12 @@ codesquares = {
     new cs.mongodb.Db('codesquares', cs.server, {}).open(function (error, client) {  
       if (error) throw error;
       var collection = new cs.mongodb.Collection(client, 'posts');
+      var content = contents.content.replace(/(\r\n|\n|\r)/gm,"<br>");
       var timestamp = new Date().getTime();
       timestamp = Number(timestamp);
       var newEntry = {
         "header" : contents.header,
-        "content" : contents.content,
+        "content" : content,
         "time": timestamp.toString(),
         "tags": contents.tags.split(" ")
       };
@@ -147,7 +148,9 @@ codesquares = {
                 for (var j in docs[i].tags) {
                   tags += docs[i].tags[j] + ' ';
                 }
-                outputHolder = { header : docs[i].header, content: docs[i].content, tags: tags };
+                var content = docs[i].content.replace(/(\r\n|\n|\r)/gm,"<br>");
+                content = cs.linkify(content);
+                outputHolder = { header : docs[i].header, content: content, tags: tags };
                 posts.push(outputHolder);
             }
             callback(null, posts);
@@ -174,6 +177,11 @@ codesquares = {
         }
       );
     });
+  },
+  
+  linkify: function(text) {
+    var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+    return text.replace(exp,"<b>[</b><a href='$1'>$1</a><b>]</b>");
   }
 }
 
