@@ -1,0 +1,11 @@
+!!! xml
+xml
+    title= title
+    link http://www.codesquares.com
+    description Code[][]
+    language en-us
+    - for (var key in output)
+        item
+            title= output[key].header
+            description= output[key].content
+            tags= output[key].tags

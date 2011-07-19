@@ -86,6 +86,16 @@ codesquares = {
         title: "Simplest Entry Form Ever"
       });
     });
+
+    cs.app.get('/xml', function(req, res) {
+      cs.fetch(0,0, function(response) {
+        res.render('xml', {
+          title: 'Code [][] XML',
+          output: response.page,
+          layout: false
+        });
+      });
+    });
     
     cs.app.post('/posts', function(req, res) {
       if (req.body.password == 'asdfaqasdfaq4321') {
