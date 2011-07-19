@@ -158,7 +158,8 @@ codesquares = {
                 for (var j in docs[i].tags) {
                   tags += docs[i].tags[j] + ' ';
                 }
-                outputHolder = { header : docs[i].header, content: docs[i].content, tags: tags };
+                var postTime = new Date(docs[i].time*100);
+                outputHolder = { header : docs[i].header, content: docs[i].content, tags: tags, time: postTime.toUTCString() };
                 posts.push(outputHolder);
             }
             callback(null, posts);
