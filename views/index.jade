@@ -12,6 +12,7 @@ h1= title
     - for (var key in output)
         .article
             .title= output[key].header
+                .date= output[key].time
             .tags Tags:
                 = output[key].tags
             .body!= output[key].content

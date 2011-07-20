@@ -51,6 +51,11 @@ h1 {
   font-size: 90%;
 }
 
+#articles .article .date {
+  font-size: 80%;
+  float: right;
+}
+
 #articles .article .title {
   padding: 5px;
   padding-left: 3px;

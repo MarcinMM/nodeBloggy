@@ -89,6 +89,14 @@ codesquares = {
 
     cs.app.get('/xml', function(req, res) {
       cs.fetch(0,0, function(response) {
+        for (var i in response.page) {
+          var str = response.page[i].content.replace(/<br>/gi, "\n");
+          str=str.replace(/<br>/gi, "\n");
+          str=str.replace(/<p.*>/gi, "\n");
+          str=str.replace(/<a.*href="(.*?)".*>(.*?)<\/a>/gi, " $2 (Link->$1) ");
+          str=str.replace(/<(?:.|\s)*?>/g, "");
+          response.page[i].content = str;
+        }
         res.render('xml', {
           title: 'Code [][] XML',
           output: response.page,
@@ -158,7 +166,7 @@ codesquares = {
                 for (var j in docs[i].tags) {
                   tags += docs[i].tags[j] + ' ';
                 }
-                var postTime = new Date(docs[i].time*100);
+                var postTime = new Date(parseInt(docs[i].time));
                 outputHolder = { header : docs[i].header, content: docs[i].content, tags: tags, time: postTime.toUTCString() };
                 posts.push(outputHolder);
             }
