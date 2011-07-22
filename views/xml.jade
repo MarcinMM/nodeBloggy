@@ -7,9 +7,10 @@ rss(version='2.0', xmlns:dc='http://purl.org/dc/elements/1.1/')
         language en-us
         - for (var key in output)
             item
+                guid http://www.codesquares.com/post/#{output[key].hashURL}
                 title= output[key].header
                 description
                     :cdata
                         #{output[key].content}
                 dc:creator Marcin M
-                dc:date= output[key].time
+                pubDate= output[key].time

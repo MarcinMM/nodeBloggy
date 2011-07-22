@@ -11,7 +11,8 @@ h1= title
 #articles
     - for (var key in output)
         .article
-            .title= output[key].header
+            .title
+                a(href='/post/'+output[key].hashURL)= output[key].header
                 .date= output[key].time
             .tags Tags:
                 = output[key].tags

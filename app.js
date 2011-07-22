@@ -70,7 +70,7 @@ codesquares = {
       });
     });
 
-    cs.app.get('/post/:post([0-9a-zA-Z-]+)', function(req, res){
+    cs.app.get('/post/:post([0-9a-zA-Z-_]+)', function(req, res){
       cs.fetch('post', req.params.post, function(response) {
         res.render('index', {
           title: 'Code [][] by Post',
@@ -129,7 +129,8 @@ codesquares = {
         "header" : contents.header,
         "content" : content,
         "time": timestamp.toString(),
-        "tags": contents.tags.split(" ")
+        "tags": contents.tags.split(" "),
+        "hashURL": cs.textToUrl(contents.header)
       };
       collection.insert(newEntry, function(err, docs) {
         client.close();
@@ -167,7 +168,7 @@ codesquares = {
                   tags += docs[i].tags[j] + ' ';
                 }
                 var postTime = new Date(parseInt(docs[i].time));
-                outputHolder = { header : docs[i].header, content: docs[i].content, tags: tags, time: postTime.toUTCString() };
+                outputHolder = { header : docs[i].header, content: docs[i].content, tags: tags, time: postTime.toUTCString(), hashURL: docs[i].hashURL };
                 posts.push(outputHolder);
             }
             callback(null, posts);
@@ -202,6 +203,16 @@ codesquares = {
     text = text.replace(">", "&gt;");
     text = text.replace(/(\r\n|\n|\r)/gm,"<br>");
     return text.replace(exp,"<b>[</b><a href='http$3://$4$5$6$7'>$5</a><b>]</b>");
+  },
+  
+  textToUrl: function(text) {
+    console.log(text);
+    var exp = /[^A-Za-z0-9-_]/ig;
+    text = text.toLowerCase();
+    text = text.replace(/ /g, "_");
+    text = text.replace(exp, "");
+    console.log(text);
+    return text;
   }
 }
 
