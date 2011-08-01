@@ -62,7 +62,7 @@ codesquares = {
     cs.app.get('/tags/:tag([0-9a-zA-Z]+)', function(req, res){
       cs.fetch('tag', req.params.tag, function(response) {
         res.render('index', {
-          title: 'Code [][] by Tag',
+          title: 'Tag[][]: ' + req.params.tag,
           content: "Immature Technologies!",
           output: response.page,
           tags: response.tags
@@ -72,8 +72,13 @@ codesquares = {
 
     cs.app.get('/post/:post([0-9a-zA-Z-_]+)', function(req, res){
       cs.fetch('post', req.params.post, function(response) {
+        var title = 'Code[][] by Post';
+        // pull the first header from the response stack
+        if (response.page.length > 0) {
+          title = response.page[0].header;
+        }
         res.render('index', {
-          title: 'Code [][] by Post',
+          title: title,
           content: "Immature Technologies!",
           output: response.page,
           tags: response.tags
