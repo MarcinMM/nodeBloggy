@@ -17,11 +17,25 @@ h1 {
   font-size: 60px;
 }
 
-#tags {
+#sidebar {
   width: 200px;
   float: right;
   border-left: 3px solid #bbb;
   margin-left: 20px;
+}
+
+#tags {
+  width: 200px;
+  margin-bottom: 10px;
+}
+
+#archives {
+  width: 200px;  
+}
+
+#archiveHeader {
+  font-weight: bold;
+  font-size: 22px;  
 }
 
 #tagHeader {
@@ -68,4 +82,9 @@ h1 {
 #articles .article .body {
   padding: 5px;
   line-height: 110%;
+}
+
+#gameContainer {
+  margin: 20px auto;
+  border: 1px solid black;
 }

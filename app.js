@@ -92,6 +92,12 @@ codesquares = {
       });
     });
 
+    cs.app.get('/game', function(req, res) {
+      res.render('game', {
+        title: "A dweller appears!"
+      });
+    });
+
     cs.app.get('/xml', function(req, res) {
       cs.fetch(0,0, function(response) {
         for (var i in response.page) {

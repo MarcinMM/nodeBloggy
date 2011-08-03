@@ -1,13 +1,19 @@
 
 h1= title
 
-#tags
-    #tagHeader Tags
-    - for (var key in tags)
+#sidebar
+    #tags
+        #tagHeader Tags
+        - for (var key in tags)
+            .tag
+                a(href='/tags/'+tags[key])= tags[key]
         .tag
-            a(href='/tags/'+tags[key])= tags[key]
-    .tag
-        a(href='/') all
+            a(href='/') all
+    #archives
+        #archiveHeader Related
+        a(href='http://www.froggyfish.net') FroggyFish 
+        a(href='http://www.wickedoast.net') WickedToast 
+        a(href='http://www.marcinmanek.com') Me 
 #articles
     - for (var key in output)
         .article
