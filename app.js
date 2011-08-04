@@ -54,7 +54,8 @@ codesquares = {
           title: 'Code [][]',
           content: "Immature Technologies!",
           output: response.page,
-          tags: response.tags
+          tags: response.tags,
+          mode: 'index'
         });
       });
     });
@@ -65,7 +66,8 @@ codesquares = {
           title: 'Code [][] - Page '+req.params.page,
           content: "Immature Technologies!",
           output: response.page,
-          tags: response.tags
+          tags: response.tags,
+          mode: 'index'
         });
       });
     });
@@ -76,7 +78,8 @@ codesquares = {
           title: 'Tag[][]: ' + req.params.tag,
           content: "Immature Technologies!",
           output: response.page,
-          tags: response.tags
+          tags: response.tags,
+          mode: 'index'
         });
       });
     });
@@ -92,7 +95,8 @@ codesquares = {
           title: title,
           content: "Immature Technologies!",
           output: response.page,
-          tags: response.tags
+          tags: response.tags,
+          mode: 'post'
         });
       });
     });
