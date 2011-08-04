@@ -59,10 +59,10 @@ codesquares = {
       });
     });
 
-    cs.app.get('/:page', function(req, res) {
+    cs.app.get('/:page([0-9]+)', function(req, res) {
       cs.fetch('page',req.params.page, function(response) {
         res.render('index', {
-          title: 'Code [][]',
+          title: 'Code [][] - Page '+req.params.page,
           content: "Immature Technologies!",
           output: response.page,
           tags: response.tags
@@ -167,8 +167,8 @@ codesquares = {
       if (error) throw error;
 
       var tags = '';
-      var params;
-      var limit = 2;
+      var params = {};
+      var limit = 10;
       var limitAndSkipAndSort = { limit: limit, skip: 0, sort: [['time', 'desc']] };
       if (mode == 'tag') {
         params = { tags: queryString };
@@ -176,9 +176,7 @@ codesquares = {
         params = { hashURL: queryString };
       } else if (mode == 'page') {
         limitAndSkipAndSort = { limit: limit, skip: (queryString * limit), sort: [['time', 'desc']] };
-      } else {
-        params = {};
-      }
+      } 
 
       var collection = new cs.mongodb.Collection(client, 'posts');
 
@@ -201,7 +199,7 @@ codesquares = {
             callback(null, posts);
           });
           // now tags
-          collection.find({ tags: {$exists: true}}, { tags: 1, _id: 0 } , {limit:limit}).toArray(function(err, docs) {
+          collection.find({ tags: {$exists: true}}, { tags: 1, _id: 0 } , {limit:10}).toArray(function(err, docs) {
             var tags = [];
             for (var i in docs) {
                 for (var j in docs[i].tags) {
