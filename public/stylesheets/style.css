@@ -33,6 +33,10 @@ h1 {
   width: 200px;  
 }
 
+#archives a {
+  display: block;
+}
+
 #archiveHeader {
   font-weight: bold;
   font-size: 22px;  
@@ -81,7 +85,7 @@ h1 {
 
 #articles .article .body {
   padding: 5px;
-  line-height: 110%;
+  line-height: 130%;
 }
 
 #gameContainer {

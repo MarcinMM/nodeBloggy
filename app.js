@@ -59,6 +59,17 @@ codesquares = {
       });
     });
 
+    cs.app.get('/:page', function(req, res) {
+      cs.fetch('page',req.params.page, function(response) {
+        res.render('index', {
+          title: 'Code [][]',
+          content: "Immature Technologies!",
+          output: response.page,
+          tags: response.tags
+        });
+      });
+    });
+
     cs.app.get('/tags/:tag([0-9a-zA-Z]+)', function(req, res){
       cs.fetch('tag', req.params.tag, function(response) {
         res.render('index', {
@@ -106,6 +117,7 @@ codesquares = {
           str=str.replace(/<p.*>/gi, "\n");
           str=str.replace(/<a.*href="(.*?)".*>(.*?)<\/a>/gi, " $2 (Link->$1) ");
           str=str.replace(/<(?:.|\s)*?>/g, "");
+          str=str.replace(/\n/gi, "<br>");
           response.page[i].content = str;
         }
         res.render('xml', {
@@ -156,10 +168,14 @@ codesquares = {
 
       var tags = '';
       var params;
+      var limit = 2;
+      var limitAndSkipAndSort = { limit: limit, skip: 0, sort: [['time', 'desc']] };
       if (mode == 'tag') {
         params = { tags: queryString };
       } else if (mode == 'post') {
         params = { hashURL: queryString };
+      } else if (mode == 'page') {
+        limitAndSkipAndSort = { limit: limit, skip: (queryString * limit), sort: [['time', 'desc']] };
       } else {
         params = {};
       }
@@ -171,7 +187,7 @@ codesquares = {
           var callback = this.parallel();
           var callback2 = this.parallel();
           // collect page contents such as headers and contents, by params
-          collection.find(params, {limit:10, sort:[['time', 'desc']]}).toArray(function(err, docs) {
+          collection.find(params, limitAndSkipAndSort).toArray(function(err, docs) {
             var posts = [];
             for (var i in docs) {
                 tags = '';
@@ -185,7 +201,7 @@ codesquares = {
             callback(null, posts);
           });
           // now tags
-          collection.find({ tags: {$exists: true}}, { tags: 1, _id: 0 } , {limit:10}).toArray(function(err, docs) {
+          collection.find({ tags: {$exists: true}}, { tags: 1, _id: 0 } , {limit:limit}).toArray(function(err, docs) {
             var tags = [];
             for (var i in docs) {
                 for (var j in docs[i].tags) {

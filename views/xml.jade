@@ -11,6 +11,6 @@ rss(version='2.0', xmlns:dc='http://purl.org/dc/elements/1.1/')
                 title= output[key].header
                 description
                     :cdata
-                        #{output[key].content}
+                        !{output[key].content}
                 dc:creator Marcin M
                 pubDate= output[key].time
