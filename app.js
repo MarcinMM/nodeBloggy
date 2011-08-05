@@ -32,6 +32,8 @@ codesquares = {
       cs.app.set('view engine', 'jade');
       cs.app.use(cs.express.bodyParser());
       cs.app.use(cs.express.methodOverride());
+      // I think we need a "stream" option to save to DB here
+      cs.app.use(cs.express.logger()));
       //cs.app.use(cs.express.compiler({ src: __dirname + '/views', enable: ['sass']}));
       cs.app.use(cs.app.router);
       cs.app.use(cs.express.static(__dirname + '/public'));
