@@ -6,10 +6,20 @@ body {
   color: #555;
 }
 
+#navi {
+  position: absolute;
+  top: 5;
+  left: 5;
+}
+
 h1, h2 {
   margin: 0;
   font-size: 22px;
   color: #343434;
+}
+
+A {
+  color: #5EC4BA;
 }
 
 h1 {
@@ -81,6 +91,14 @@ h1 {
   font-size: 120%;
   text-decoration: underline;
   background-color: #eee;
+}
+
+#articles .commentCount {
+  float: right;
+  decoration: none;
+  font-style: italic;
+  font-size: 80%;
+  margin-right: 10px;
 }
 
 #articles .article .body {

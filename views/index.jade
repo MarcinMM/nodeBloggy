@@ -22,6 +22,8 @@ h1= title
             .title
                 a(href='/post/'+output[key].hashURL)= output[key].header
                 .date= output[key].time
+                - if (mode=='index')
+                    a(href='/post/'+output[key].hashURL+'#disqus_thread', data-disqus-identifier=output[key].hashURL, class='commentCount') NT
             .tags Tags:
                 = output[key].tags
             .body!= output[key].content
@@ -29,15 +31,15 @@ h1= title
                 #disqus_thread
                 script(type='text/javascript')
                     var disqus_shortname = 'codesquares';
-                    var disqus_identified = #{output[key].hashURL};
-                    var disqus_url = 'http://www.codesquares.com/' + #{output[key].hashURL};
+                    var disqus_identifier = '#{output[key].hashURL}';
+                    var disqus_url = 'http://www.codesquares.com/post/\#{output[key].hashURL}';
 
                     (function() {
                         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
                         dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
                         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
                     })();
-                a(href='http://disqus.com') blog comments powered by span(class='logo-disqus') Disqus
+                a(href='http://disqus.com') blog comments powered by Disqus
 
 - if (mode == 'index')
     script(type='text/javascript')
