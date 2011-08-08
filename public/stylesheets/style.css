@@ -22,6 +22,11 @@ A {
   color: #5EC4BA;
 }
 
+#articles .article .body img {
+  width: 600px;
+  height: 400px;
+}
+
 h1 {
   text-shadow: 1px 2px 2px #ddd;
   font-size: 60px;

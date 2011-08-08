@@ -229,8 +229,9 @@ codesquares = {
   
   cleanup: function(text) {
     var exp = /(\b(http(s?):\/\/)(www\.)?)([\w\.-]+)([\.{2,4}\/?])([\S]*)/ig;
-    text = text.replace("<", "&lt;");
-    text = text.replace(">", "&gt;");
+    //text = text.replace("<", "&lt;");
+    //text = text.replace(">", "&gt;");
+    text = text.replace("<script", "&lt;script")
     text = text.replace(/(\r\n|\n|\r)/gm,"<br>");
     return text.replace(exp,"<b>[</b><a href='http$3://$4$5$6$7'>$5</a><b>]</b>");
   },
