@@ -20,10 +20,10 @@ h1= title
     - for (var key in output)
         .article
             .title
-                a(href='/post/'+output[key].hashURL)= output[key].header
                 .date= output[key].time
                 - if (mode=='index')
                     a(href='/post/'+output[key].hashURL+'#disqus_thread', data-disqus-identifier=output[key].hashURL, class='commentCount') NT
+                a(href='/post/'+output[key].hashURL)= output[key].header
             .tags Tags:
                 = output[key].tags
             .body!= output[key].content
