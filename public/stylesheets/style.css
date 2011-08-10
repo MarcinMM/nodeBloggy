@@ -6,10 +6,25 @@ body {
   color: #555;
 }
 
+#navi {
+  position: absolute;
+  top: 5;
+  left: 5;
+}
+
 h1, h2 {
   margin: 0;
   font-size: 22px;
   color: #343434;
+}
+
+A {
+  color: #5EC4BA;
+}
+
+#articles .article .body img {
+  width: 600px;
+  height: 400px;
 }
 
 h1 {
@@ -19,7 +34,8 @@ h1 {
 
 #sidebar {
   width: 200px;
-  float: right;
+  position: absolute;
+  right: 0px;
   border-left: 3px solid #bbb;
   margin-left: 20px;
 }
@@ -81,6 +97,14 @@ h1 {
   font-size: 120%;
   text-decoration: underline;
   background-color: #eee;
+}
+
+#articles .commentCount {
+  float: right;
+  decoration: none;
+  font-style: italic;
+  font-size: 80%;
+  margin-right: 10px;
 }
 
 #articles .article .body {

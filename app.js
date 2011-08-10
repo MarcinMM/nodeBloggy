@@ -32,8 +32,7 @@ codesquares = {
       cs.app.set('view engine', 'jade');
       cs.app.use(cs.express.bodyParser());
       cs.app.use(cs.express.methodOverride());
-      // I think we need a "stream" option to save to DB here
-      cs.app.use(cs.express.logger()));
+      cs.app.use(cs.express.logger());
       //cs.app.use(cs.express.compiler({ src: __dirname + '/views', enable: ['sass']}));
       cs.app.use(cs.app.router);
       cs.app.use(cs.express.static(__dirname + '/public'));
@@ -112,6 +111,12 @@ codesquares = {
     cs.app.get('/game', function(req, res) {
       res.render('game', {
         title: "A dweller appears!"
+      });
+    });
+
+    cs.app.get('/about', function(req, res) {
+      res.render('about', {
+        title: "The imaginatively titled About Page"
       });
     });
 
@@ -230,8 +235,9 @@ codesquares = {
   
   cleanup: function(text) {
     var exp = /(\b(http(s?):\/\/)(www\.)?)([\w\.-]+)([\.{2,4}\/?])([\S]*)/ig;
-    text = text.replace("<", "&lt;");
-    text = text.replace(">", "&gt;");
+    //text = text.replace("<", "&lt;");
+    //text = text.replace(">", "&gt;");
+    text = text.replace("<script", "&lt;script")
     text = text.replace(/(\r\n|\n|\r)/gm,"<br>");
     return text.replace(exp,"<b>[</b><a href='http$3://$4$5$6$7'>$5</a><b>]</b>");
   },
