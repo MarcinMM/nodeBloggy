@@ -1,4 +1,3 @@
-
 /**
  * Module dependencies.
  */
@@ -240,6 +239,7 @@ codesquares = {
     text = text.replace("<script", "&lt;script")
     text = text.replace(/(\r\n|\n|\r)/gm,"<br>");
     return text.replace(exp,"<b>[</b><a href='http$3://$4$5$6$7'>$5</a><b>]</b>");
+    // check this out to do advanced HTTP parsing (for img, for example): http://ejohn.org/blog/search-and-dont-replace/
   },
   
   textToUrl: function(text) {
