@@ -238,8 +238,21 @@ codesquares = {
     //text = text.replace(">", "&gt;");
     text = text.replace("<script", "&lt;script")
     text = text.replace(/(\r\n|\n|\r)/gm,"<br>");
-    return text.replace(exp,"<b>[</b><a href='http$3://$4$5$6$7'>$5</a><b>]</b>");
-    // check this out to do advanced HTTP parsing (for img, for example): http://ejohn.org/blog/search-and-dont-replace/
+    //return text.replace(exp,"<b>[</b><a href='http$3://$4$5$6$7'>$5</a><b>]</b>");
+    var q = '';
+    text.replace(exp, function(m, one, two, three, four, five, six, seven){ 
+      if ((seven.indexOf('jpg') != -1) || (seven.indexOf('png') != -1) || (seven.indexOf('gif') != -1)) {
+        q += "<img src='http";
+        if (four) q+= four;
+        q += five + six + seven + "'>";
+      } else {
+        q += "<b>[</b><a href='http";
+        if (four) q+= four;
+        q += "://" + five + six + seven + "'>" + six + "</a><b>]</b>";
+      }
+      return q;
+    }); 
+
   },
   
   textToUrl: function(text) {
