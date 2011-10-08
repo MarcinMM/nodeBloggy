@@ -55,7 +55,8 @@ codesquares = {
           content: "Immature Technologies!",
           output: response.page,
           tags: response.tags,
-          mode: 'index'
+          mode: 'index',
+	  page: 0
         });
       });
     });
@@ -67,7 +68,8 @@ codesquares = {
           content: "Immature Technologies!",
           output: response.page,
           tags: response.tags,
-          mode: 'index'
+          mode: 'index',
+	  page: req.params.page
         });
       });
     });
@@ -209,7 +211,7 @@ codesquares = {
             callback(null, posts);
           });
           // now tags
-          collection.find({ tags: {$exists: true}}, { tags: 1, _id: 0 } , {limit:10}).toArray(function(err, docs) {
+          collection.find({ tags: {$exists: true}}, { tags: 1, _id: 0 } , {limit:20}).toArray(function(err, docs) {
             var tags = [];
             for (var i in docs) {
                 for (var j in docs[i].tags) {
@@ -233,26 +235,27 @@ codesquares = {
   },
   
   cleanup: function(text) {
-    var exp = /(\b(http(s?):\/\/)(www\.)?)([\w\.-]+)([\.{2,4}\/?])([\S]*)/ig;
+	text = text.replace("<", "&lt;");
+	text = text.replace(">", "&gt;");
+    	//text = text.replace("<script", "&lt;script")
+	text = text.replace(/(\r\n|\n|\r)/gm,"<br>");
+	var imageRegex = /\.(png|jpg|jpeg|gif)$/;
+	text= text.replace(/(\b(?:https?|ftp):\/\/[a-z0-9-+&@#\/%?=~_|!:,.;]*[a-z0-9-+&@#\/%=~_|])/gim,
+    	function(str) {
+        	if (str.match(imageRegex)) {
+            		return('<img src="' + str + '">');
+        	} else {
+			return('<b>[</b><a href="' + str + '" class="autolink" target="_blank">' + str.replace('http://','') + '</a><b>]</b>');
+        	}
+    });
+
+    //var exp = /(\b(http(s?):\/\/)(www\.)?)([\w\.-]+)([\.{2,4}\/?])([\S]*)/ig;
     //text = text.replace("<", "&lt;");
     //text = text.replace(">", "&gt;");
-    text = text.replace("<script", "&lt;script")
-    text = text.replace(/(\r\n|\n|\r)/gm,"<br>");
-    //return text.replace(exp,"<b>[</b><a href='http$3://$4$5$6$7'>$5</a><b>]</b>");
-    var q = '';
-    text.replace(exp, function(m, one, two, three, four, five, six, seven){ 
-      if ((seven.indexOf('jpg') != -1) || (seven.indexOf('png') != -1) || (seven.indexOf('gif') != -1)) {
-        q += "<img src='http";
-        if (four) q+= four;
-        q += five + six + seven + "'>";
-      } else {
-        q += "<b>[</b><a href='http";
-        if (four) q+= four;
-        q += "://" + five + six + seven + "'>" + six + "</a><b>]</b>";
-      }
-      return q;
-    }); 
-
+    //text = text.replace("<script", "&lt;script")
+    //text = text.replace(/(\r\n|\n|\r)/gm,"<br>");
+    return text;
+	//.replace(exp,"<b>[</b><a href='http$3://$4$5$6$7'>$5</a><b>]</b>");
   },
   
   textToUrl: function(text) {

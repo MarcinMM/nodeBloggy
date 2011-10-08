@@ -8,14 +8,18 @@ body {
 
 #navi {
   position: absolute;
-  top: 5;
-  left: 5;
+  top: 5px;
+  left: 5px;
 }
 
 h1, h2 {
   margin: 0;
   font-size: 22px;
   color: #343434;
+}
+
+h1.pageTitle {
+  margin-top: 20px;
 }
 
 A {
@@ -30,6 +34,22 @@ A {
 h1 {
   text-shadow: 1px 2px 2px #ddd;
   font-size: 60px;
+}
+
+#aboutContainer {
+  text-align: left;
+  margin: 50px;
+}
+
+#core,#support {
+  text-shadow: 1px 2px 2px #ddd;
+  font-size: 30px;  
+}
+
+.what {
+  margin: 10px;
+  margin-left: 15px;
+  font-size: 12px;
 }
 
 #sidebar {
@@ -71,8 +91,8 @@ h1 {
 #articles {
   text-align: left;
   margin-left: auto;
-  margin-right: auto;
-  width: 720px;
+  margin-right: 210px;
+  float: left;
 }
 
 #articles .article {

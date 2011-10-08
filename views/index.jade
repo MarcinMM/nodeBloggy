@@ -1,5 +1,5 @@
 
-h1= title
+h1.pageTitle= title
 
 #articles
     - for (var key in output)
@@ -41,6 +41,10 @@ h1= title
         a(href='http://www.marcinmanek.com') Me 
         a(href='/game') Dweller
         a(href='/xml') RSS Feed
+        a(href='/about') about codesquares
+        - if (page > 0)
+            a(href='/'+((page*1)-1))= (page*1) - 1
+        a(href='/'+((page*1)+1))= (page*1) + 1
 
 - if (mode == 'index')
     script(type='text/javascript')
