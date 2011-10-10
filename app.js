@@ -81,7 +81,8 @@ codesquares = {
           content: "Immature Technologies!",
           output: response.page,
           tags: response.tags,
-          mode: 'index'
+          mode: 'index',
+	  page: 0
         });
       });
     });
@@ -98,7 +99,8 @@ codesquares = {
           content: "Immature Technologies!",
           output: response.page,
           tags: response.tags,
-          mode: 'post'
+          mode: 'post',
+	  page: 0
         });
       });
     });
