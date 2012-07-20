@@ -25,6 +25,7 @@ codesquares = {
     cs.mongodb = require('mongodb');
     cs.step = require('step');
     cs.server = new cs.mongodb.Server("127.0.0.1", 27017, {});
+    cs.db = new cs.mongodb.Db('codesquares', cs.server, {});
 
     cs.app.configure(function(){
       cs.app.set('views', __dirname + '/views');
@@ -46,7 +47,7 @@ codesquares = {
     });
 
     cs.app.listen(3000);
-    console.log("Express server listening on port %d in %s mode", cs.app.address().port, cs.app.settings.env);
+    console.log("Express server listening on port 3000 in %s mode", cs.app.settings.env);
 
     cs.app.get('/', function(req, res) {
       cs.fetch(0,0, function(response) {
@@ -154,9 +155,8 @@ codesquares = {
   },
   
   save: function(contents) {
-    cs.server = new cs.mongodb.Server("127.0.0.1", 27017, {});
 
-    new cs.mongodb.Db('codesquares', cs.server, {}).open(function (error, client) {  
+    cs.db.open(function (error, client) {  
       if (error) throw error;
       var collection = new cs.mongodb.Collection(client, 'posts');
       var content = cs.cleanup(contents.content);
@@ -177,7 +177,7 @@ codesquares = {
   
   fetch: function(mode, queryString, theCallback) {
     var pageContent = [];
-    new cs.mongodb.Db('codesquares', cs.server, {}).open(function (error, client) {  
+    cs.db.open(function (error, client) {  
       if (error) throw error;
 
       var tags = '';
