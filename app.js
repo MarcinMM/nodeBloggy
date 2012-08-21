@@ -26,6 +26,10 @@ codesquares = {
     cs.step = require('step');
     cs.server = new cs.mongodb.Server("127.0.0.1", 27017, {});
     cs.db = new cs.mongodb.Db('codesquares', cs.server, {});
+    cs.db.open(function (error, client) {
+      if (error) throw error;
+      cs.collection = new cs.mongodb.Collection(client, 'posts');
+    });
 
     cs.app.configure(function(){
       cs.app.set('views', __dirname + '/views');
@@ -57,7 +61,7 @@ codesquares = {
           output: response.page,
           tags: response.tags,
           mode: 'index',
-	  page: 0
+          page: 0
         });
       });
     });
@@ -70,7 +74,7 @@ codesquares = {
           output: response.page,
           tags: response.tags,
           mode: 'index',
-	  page: req.params.page
+          page: req.params.page
         });
       });
     });
@@ -83,7 +87,7 @@ codesquares = {
           output: response.page,
           tags: response.tags,
           mode: 'index',
-	  page: 0
+          page: 0
         });
       });
     });
@@ -101,7 +105,7 @@ codesquares = {
           output: response.page,
           tags: response.tags,
           mode: 'post',
-	  page: 0
+          page: 0
         });
       });
     });
@@ -156,84 +160,76 @@ codesquares = {
   
   save: function(contents) {
 
-    cs.db.open(function (error, client) {  
-      if (error) throw error;
-      var collection = new cs.mongodb.Collection(client, 'posts');
-      var content = cs.cleanup(contents.content);
-      var timestamp = new Date().getTime();
-      timestamp = Number(timestamp);
-      var newEntry = {
-        "header" : contents.header,
-        "content" : content,
-        "time": timestamp.toString(),
-        "tags": contents.tags.split(" "),
-        "hashURL": cs.textToUrl(contents.header)
-      };
-      collection.insert(newEntry, function(err, docs) {
-        client.close();
-      });
+    var content = cs.cleanup(contents.content);
+    var timestamp = new Date().getTime();
+    timestamp = Number(timestamp);
+    var newEntry = {
+      "header" : contents.header,
+      "content" : content,
+      "time": timestamp.toString(),
+      "tags": contents.tags.split(" "),
+      "hashURL": cs.textToUrl(contents.header)
+    };
+    cs.collection.insert(newEntry, function(err, docs) {
+      // save is complete, redirect to front page
+      res.redirect('/');
     });
   },
   
   fetch: function(mode, queryString, theCallback) {
     var pageContent = [];
-    cs.db.open(function (error, client) {  
-      if (error) throw error;
 
-      var tags = '';
-      var params = {};
-      var limit = 10;
-      var limitAndSkipAndSort = { limit: limit, skip: 0, sort: [['time', 'desc']] };
-      if (mode == 'tag') {
-        params = { tags: queryString };
-      } else if (mode == 'post') {
-        params = { hashURL: queryString };
-      } else if (mode == 'page') {
-        limitAndSkipAndSort = { limit: limit, skip: (queryString * limit), sort: [['time', 'desc']] };
-      } 
+    var tags = '';
+    var params = {};
+    var limit = 10;
+    var limitAndSkipAndSort = { limit: limit, skip: 0, sort: [['time', 'desc']] };
+    if (mode == 'tag') {
+      params = { tags: queryString };
+    } else if (mode == 'post') {
+      params = { hashURL: queryString };
+    } else if (mode == 'page') {
+      limitAndSkipAndSort = { limit: limit, skip: (queryString * limit), sort: [['time', 'desc']] };
+    } 
 
-      var collection = new cs.mongodb.Collection(client, 'posts');
-
-      cs.step(
-        function getPageInfo() {
-          var callback = this.parallel();
-          var callback2 = this.parallel();
-          // collect page contents such as headers and contents, by params
-          collection.find(params, limitAndSkipAndSort).toArray(function(err, docs) {
-            var posts = [];
-            for (var i in docs) {
-                tags = '';
-                for (var j in docs[i].tags) {
-                  tags += docs[i].tags[j] + ' ';
-                }
-                var postTime = new Date(parseInt(docs[i].time));
-                outputHolder = { header : docs[i].header, content: docs[i].content, tags: tags, time: postTime.toUTCString(), hashURL: docs[i].hashURL };
-                posts.push(outputHolder);
-            }
-            callback(null, posts);
-          });
-          // now tags
-          collection.find({ tags: {$exists: true}}, { tags: 1, _id: 0 } , {limit:20}).toArray(function(err, docs) {
-            var tags = [];
-            for (var i in docs) {
-                for (var j in docs[i].tags) {
-                  if (tags.indexOf(docs[i].tags[j]) == -1) {
-                    tags.push(docs[i].tags[j]); 
-                  } 
-                }
-            }
-            callback2(null, tags);
-          });
-          // more?
-        },
-        function render(err, data1, data2) {
-          if (err) throw err;
-          // now I want everything from above
-          var output = { page: data1, 'tags': data2 };
-          theCallback(output);
-        }
-      );
-    });
+    cs.step(
+      function getPageInfo() {
+        var callback = this.parallel();
+        var callback2 = this.parallel();
+        // collect page contents such as headers and contents, by params
+        cs.collection.find(params, limitAndSkipAndSort).toArray(function(err, docs) {
+          var posts = [];
+          for (var i in docs) {
+              tags = '';
+              for (var j in docs[i].tags) {
+                tags += docs[i].tags[j] + ' ';
+              }
+              var postTime = new Date(parseInt(docs[i].time));
+              outputHolder = { header : docs[i].header, content: docs[i].content, tags: tags, time: postTime.toUTCString(), hashURL: docs[i].hashURL };
+              posts.push(outputHolder);
+          }
+          callback(null, posts);
+        });
+        // now tags
+        cs.collection.find({ tags: {$exists: true}}, { tags: 1, _id: 0 } , {limit:20}).toArray(function(err, docs) {
+          var tags = [];
+          for (var i in docs) {
+              for (var j in docs[i].tags) {
+                if (tags.indexOf(docs[i].tags[j]) == -1) {
+                  tags.push(docs[i].tags[j]); 
+                } 
+              }
+          }
+          callback2(null, tags);
+        });
+        // more?
+      },
+      function render(err, data1, data2) {
+        if (err) throw err;
+        // now I want everything from above
+        var output = { page: data1, 'tags': data2 };
+        theCallback(output);
+      }
+    );
   },
   
   cleanup: function(text) {
