@@ -1,0 +1,11 @@
+
+h1.pageTitle= title
+
+#articles
+    - for (var key in output)
+        .article
+            .title
+                .date= output[key].time
+                output[key].ip
+                = output[key].path
+            .body!= output[key].query

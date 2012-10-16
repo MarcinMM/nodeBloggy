@@ -29,6 +29,7 @@ codesquares = {
     cs.db.open(function (error, client) {
       if (error) throw error;
       cs.collection = new cs.mongodb.Collection(client, 'posts');
+      cs.loggery = new cs.mongodb.Collection(client, 'logs');
     });
 
     cs.app.configure(function(){
@@ -64,6 +65,7 @@ codesquares = {
           page: 0
         });
       });
+      cs.logSave(req);
     });
 
     cs.app.get('/:page([0-9]+)', function(req, res) {
@@ -77,6 +79,7 @@ codesquares = {
           page: req.params.page
         });
       });
+      cs.logSave(req);
     });
 
     cs.app.get('/tags/:tag([0-9a-zA-Z]+)', function(req, res){
@@ -90,6 +93,7 @@ codesquares = {
           page: 0
         });
       });
+      cs.logSave(req);
     });
 
     cs.app.get('/post/:post([0-9a-zA-Z-_]+)', function(req, res){
@@ -108,24 +112,28 @@ codesquares = {
           page: 0
         });
       });
+      cs.logSave(req);
     });
     
     cs.app.get('/entry', function(req, res) {
       res.render('entry', {
         title: "Simplest Entry Form Ever"
       });
+      cs.logSave(req);
     });
 
     cs.app.get('/game', function(req, res) {
       res.render('game', {
         title: "A dweller appears!"
       });
+      cs.logSave(req);
     });
 
     cs.app.get('/about', function(req, res) {
       res.render('about', {
         title: "The imaginatively titled About Page"
       });
+      cs.logSave(req);
     });
 
     cs.app.get('/xml', function(req, res) {
@@ -145,8 +153,24 @@ codesquares = {
           layout: false
         });
       });
+      cs.logSave(req);
     });
     
+    cs.app.get('/logs', function(req, res)) {
+      cs.loggery.find(params, { sort: [['time', 'desc']] }).toArray(function(err, logs) {
+        var posts = [];
+        for (var i in logs) {
+          var postTime = new Date(parseInt(logs[i].time));
+          outputHolder = { ip : logs[i].ip, path: logs[i].path, time: postTime.toUTCString(), query: logs[i].query };
+          posts.push(outputHolder);
+        }
+        res.render('logs', {
+          title: 'Loggery',
+          output: posts
+        })
+      });
+    }
+
     cs.app.post('/posts', function(req, res) {
       if (req.body.password == 'asdfaqasdfaq4321') {
         cs.save(req.body);
@@ -176,6 +200,16 @@ codesquares = {
     });
   },
   
+  logSave: function(contents) {
+    var newEntry = {
+      "ip": contents.ip,
+      "path": contents.path,
+      "query": JSON.stringify(contents.query),
+      "time": timestamp.toString()
+    };
+    cs.loggery.insert(newEntry);
+  },
+
   fetch: function(mode, queryString, theCallback) {
     var pageContent = [];
 
