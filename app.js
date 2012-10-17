@@ -156,8 +156,8 @@ codesquares = {
       cs.logSave(req);
     });
     
-    cs.app.get('/logs', function(req, res)) {
-      cs.loggery.find(params, { sort: [['time', 'desc']] }).toArray(function(err, logs) {
+    cs.app.get('/logs', function(req, res) {
+      cs.loggery.find({}, { sort: [['time', 'desc']] }).toArray(function(err, logs) {
         var posts = [];
         for (var i in logs) {
           var postTime = new Date(parseInt(logs[i].time));
@@ -169,7 +169,7 @@ codesquares = {
           output: posts
         })
       });
-    }
+    });
 
     cs.app.post('/posts', function(req, res) {
       if (req.body.password == 'asdfaqasdfaq4321') {
@@ -201,10 +201,13 @@ codesquares = {
   },
   
   logSave: function(contents) {
+    var timestamp = new Date().getTime();
+    timestamp = Number(timestamp);
+    var ip = contents.headers['x-forwarded-for'] || contents.connection.remoteAddress;
     var newEntry = {
-      "ip": contents.ip,
-      "path": contents.path,
-      "query": JSON.stringify(contents.query),
+      "ip": ip,
+      "path": contents.url,
+      "referer": contents.headers.referer,
       "time": timestamp.toString()
     };
     cs.loggery.insert(newEntry);
