@@ -70,6 +70,7 @@ codesquares = {
 
     cs.app.get('/:page([0-9]+)', function(req, res) {
       cs.fetch('page',req.params.page, function(response) {
+	if (response.page.length > 0) {
         res.render('index', {
           title: 'Code [][] - Page '+req.params.page,
           content: "Immature Technologies!",
@@ -78,6 +79,20 @@ codesquares = {
           mode: 'index',
           page: req.params.page
         });
+	} else {
+		cs.fetch('page', 0, function(response) {
+        		res.render('index', {
+        		  title: 'Code [][]',
+        		  content: "Immature Technologies!",
+        		  output: response.page,
+        		  tags: response.tags,
+        		  mode: 'index',
+        		  page: 0
+        		});
+		});
+
+	}
+
       });
       cs.logSave(req);
     });
