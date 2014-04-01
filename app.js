@@ -55,8 +55,8 @@ codesquares = {
       cs.app.use(cs.express.errorHandler()); 
     });
 
-    cs.app.listen(3000);
-    console.log("Express server listening on port 3000 in %s mode", cs.app.settings.env);
+    cs.app.listen(80);
+    console.log("Express server listening on port 80 in %s mode", cs.app.settings.env);
 
     cs.app.get('/', function(req, res) {
       cs.fetch(0,0, function(response) {
