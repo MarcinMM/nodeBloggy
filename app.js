@@ -24,8 +24,12 @@ codesquares = {
     cs.app = cs.express.createServer();
     cs.mongodb = require('mongodb');
     cs.step = require('step');
-    cs.server = new cs.mongodb.Server("127.0.0.1", 27017, {});
-    cs.db = new cs.mongodb.Db('codesquares', cs.server, {});
+    cs.server = new cs.mongodb.Server(
+      "mongodb://heroku_app23641824:v7pcjchbjub6m8qor1ip335fn2@ds035897.mongolab.com", 
+      35897, 
+      {}
+    );
+    cs.db = new cs.mongodb.Db('heroku_app23641824', cs.server, {});
     cs.db.open(function (error, client) {
       if (error) throw error;
       cs.collection = new cs.mongodb.Collection(client, 'posts');
