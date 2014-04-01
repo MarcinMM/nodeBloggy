@@ -27,7 +27,7 @@ codesquares = {
     cs.server = new cs.mongodb.Server(
       "mongodb://heroku_app23641824:v7pcjchbjub6m8qor1ip335fn2@ds035897.mongolab.com", 
       35897, 
-      {}
+      {safe:false}
     );
     cs.db = new cs.mongodb.Db('heroku_app23641824', cs.server, {});
     cs.db.open(function (error, client) {
