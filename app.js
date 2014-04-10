@@ -22,17 +22,24 @@ codesquares = {
     cs = codesquares;
     cs.express = require('express');
     cs.app = cs.express.createServer();
-    cs.mongodb = require('mongodb');
+    cs.mongodb = require('mongodb').MongoClient;
+    cs.db;
     cs.step = require('step');
-    cs.server = new cs.mongodb.Server(
-      "mongodb://heroku_app23641824:v7pcjchbjub6m8qor1ip335fn2@ds035897.mongolab.com", 
-      35897
-    );
-    cs.db = new cs.mongodb.Db('heroku_app23641824', cs.server, {});
-    cs.db.open(function (error, client) {
-      if (error) throw error;
-      cs.collection = new cs.mongodb.Collection(client, 'posts');
-      cs.loggery = new cs.mongodb.Collection(client, 'logs');
+
+    var mongoLabUri = process.env.MONGOLAB_URI;
+    console.log(mongoLabUri);
+
+    //MongoClient.connect("mongodb://heroku_app23641824:v7pcjchbjub6m8qor1ip335fn2@ds035897.mongolab.com:35897/heroku_app23641824", function(err, database) {
+    cs.mongodb.connect(mongoLabUri, function(err, database) {
+      if(err) throw err;
+
+      cs.db = database;
+      cs.collection   = db.collection(client, 'posts');
+      cs.loggery      = db.collectionollection(client, 'logs');
+
+      // Start the application after the database connection is ready
+      cs.app.listen(80);
+      console.log("Express server listening on port 80 in %s mode", cs.app.settings.env);
     });
 
     cs.app.configure(function(){
