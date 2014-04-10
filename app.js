@@ -27,6 +27,7 @@ codesquares = {
     cs.step = require('step');
 
     var mongoLabUri = process.env.MONGOLAB_URI;
+    var port = Number(process.env.PORT || 5000);
 
     cs.mongodb.connect(mongoLabUri, function(err, database) {
       if(err) throw err;
@@ -36,7 +37,7 @@ codesquares = {
       cs.loggery      = cs.db.collection('logs');
 
       // Start the application after the database connection is ready
-      cs.app.listen(80);
+      cs.app.listen(port);
       console.log("Express server listening on port 80 in %s mode", cs.app.settings.env);
     });
 
@@ -76,24 +77,24 @@ codesquares = {
     cs.app.get('/:page([0-9]+)', function(req, res) {
       cs.fetch('page',req.params.page, function(response) {
       	if (response.page.length > 0) {
-              res.render('index', {
-                title: 'Code [][] - Page '+req.params.page,
-                content: "Immature Technologies!",
-                output: response.page,
-                tags: response.tags,
-                mode: 'index',
-                page: req.params.page
-              });
-      	} else {
+        res.render('index', {
+          title: 'Code [][] - Page '+req.params.page,
+          content: "Immature Technologies!",
+          output: response.page,
+          tags: response.tags,
+          mode: 'index',
+          page: req.params.page
+        });
+    	} else {
       		cs.fetch('page', 0, function(response) {
-              		res.render('index', {
-              		  title: 'Code [][]',
-              		  content: "Immature Technologies!",
-              		  output: response.page,
-              		  tags: response.tags,
-              		  mode: 'index',
-              		  page: 0
-              		});
+        		res.render('index', {
+        		  title: 'Code [][]',
+        		  content: "Immature Technologies!",
+        		  output: response.page,
+        		  tags: response.tags,
+        		  mode: 'index',
+        		  page: 0
+        		});
       		});
       	}
       });
