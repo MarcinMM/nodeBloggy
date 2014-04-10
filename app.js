@@ -229,7 +229,7 @@ codesquares = {
       "referer": contents.headers.referer,
       "time": timestamp.toString()
     };
-    cs.loggery.insert(newEntry);
+    cs.loggery.insert(newEntry, { w:0 });
   },
 
   fetch: function(mode, queryString, theCallback) {
