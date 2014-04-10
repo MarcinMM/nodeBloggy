@@ -34,8 +34,8 @@ codesquares = {
       if(err) throw err;
 
       cs.db = database;
-      cs.collection   = db.collection(client, 'posts');
-      cs.loggery      = db.collectionollection(client, 'logs');
+      cs.collection   = cs.db.collection(client, 'posts');
+      cs.loggery      = cs.db.collectionollection(client, 'logs');
 
       // Start the application after the database connection is ready
       cs.app.listen(80);
