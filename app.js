@@ -27,9 +27,7 @@ codesquares = {
     cs.step = require('step');
 
     var mongoLabUri = process.env.MONGOLAB_URI;
-    console.log(mongoLabUri);
 
-    //MongoClient.connect("mongodb://heroku_app23641824:v7pcjchbjub6m8qor1ip335fn2@ds035897.mongolab.com:35897/heroku_app23641824", function(err, database) {
     cs.mongodb.connect(mongoLabUri, function(err, database) {
       if(err) throw err;
 
@@ -61,9 +59,6 @@ codesquares = {
       cs.app.use(cs.express.errorHandler()); 
     });
 
-    cs.app.listen(3000);
-    console.log("Express server listening on port 80 in %s mode", cs.app.settings.env);
-
     cs.app.get('/', function(req, res) {
       cs.fetch(0,0, function(response) {
         res.render('index', {
@@ -80,29 +75,27 @@ codesquares = {
 
     cs.app.get('/:page([0-9]+)', function(req, res) {
       cs.fetch('page',req.params.page, function(response) {
-	if (response.page.length > 0) {
-        res.render('index', {
-          title: 'Code [][] - Page '+req.params.page,
-          content: "Immature Technologies!",
-          output: response.page,
-          tags: response.tags,
-          mode: 'index',
-          page: req.params.page
-        });
-	} else {
-		cs.fetch('page', 0, function(response) {
-        		res.render('index', {
-        		  title: 'Code [][]',
-        		  content: "Immature Technologies!",
-        		  output: response.page,
-        		  tags: response.tags,
-        		  mode: 'index',
-        		  page: 0
-        		});
-		});
-
-	}
-
+      	if (response.page.length > 0) {
+              res.render('index', {
+                title: 'Code [][] - Page '+req.params.page,
+                content: "Immature Technologies!",
+                output: response.page,
+                tags: response.tags,
+                mode: 'index',
+                page: req.params.page
+              });
+      	} else {
+      		cs.fetch('page', 0, function(response) {
+              		res.render('index', {
+              		  title: 'Code [][]',
+              		  content: "Immature Technologies!",
+              		  output: response.page,
+              		  tags: response.tags,
+              		  mode: 'index',
+              		  page: 0
+              		});
+      		});
+      	}
       });
       cs.logSave(req);
     });
