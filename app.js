@@ -35,7 +35,7 @@ codesquares = {
 
       cs.db = database;
       cs.collection   = cs.db.collection('posts');
-      cs.loggery      = cs.db.collectionollection('logs');
+      cs.loggery      = cs.db.collection('logs');
 
       // Start the application after the database connection is ready
       cs.app.listen(80);
