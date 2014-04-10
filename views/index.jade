@@ -15,15 +15,15 @@ h1.pageTitle= title
             - if (mode=='post')
                 #disqus_thread
                 script(type='text/javascript')
-                    var disqus_shortname = 'codesquares'
-                    var disqus_identifier = '#{output[key].hashURL}'
-                    var disqus_url = 'http://www.codesquares.com/post/#{output[key].hashURL}'
+                    var disqus_shortname = 'codesquares';
+                    var disqus_identifier = '#{output[key].hashURL}';
+                    var disqus_url = 'http://www.codesquares.com/post/#{output[key].hashURL}';
 
                     (function() {
-                        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true
-                        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js'
-                        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
-                    })()
+                        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                    })();
                 a(href='http://disqus.com') blog comments powered by Disqus
 
 #sidebar
@@ -48,11 +48,11 @@ h1.pageTitle= title
 
 - if (mode == 'index')
     script(type='text/javascript')
-        var disqus_shortname = 'codesquares' // required: replace example with your forum shortname
+        var disqus_shortname = 'codesquares'; // required: replace example with your forum shortname
         /* * * DON'T EDIT BELOW THIS LINE * * */
         (function () {
-            var s = document.createElement('script'); s.async = true
-            s.type = 'text/javascript'
-            s.src = 'http://' + disqus_shortname + '.disqus.com/count.js'
-            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s)
-        }())
+            var s = document.createElement('script'); s.async = true;
+            s.type = 'text/javascript';
+            s.src = 'http://' + disqus_shortname + '.disqus.com/count.js';
+            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
