@@ -141,6 +141,13 @@ codesquares = {
       cs.logSave(req);
     });
 
+    cs.app.get('/game2', function(req, res) {
+      res.render('game2', {
+        title: "Ping."
+      });
+      cs.logSave(req);
+    });
+
     cs.app.get('/game', function(req, res) {
       res.render('game', {
         title: "A dweller appears!"
