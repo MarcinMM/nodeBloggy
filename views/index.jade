@@ -27,6 +27,16 @@ h1.pageTitle= title
                 a(href='http://disqus.com') blog comments powered by Disqus
 
 #sidebar
+    #archives
+        #archiveHeader Related
+        a(href='/game') Dweller
+        a(href='/game2') Ping.
+        a(href='http://www.marcinmanek.com') Me
+        a(href='/xml') RSS Feed
+        a(href='/about') about codesquares
+        - if (page > 0)
+            a(href='/'+((page*1)-1))= (page*1) - 1
+        a(href='/'+((page*1)+1))= (page*1) + 1
     #tags
         #tagHeader Tags
         - for (var key in tags)
@@ -34,18 +44,6 @@ h1.pageTitle= title
                 a(href='/tags/'+tags[key])= tags[key]
         .tag
             a(href='/') all
-    #archives
-        #archiveHeader Related
-        a(href='/game') Dweller
-        a(href='/game2') Ping.
-        /* a(href='http://www.froggyfish.net') FroggyFish */
-        /* a(href='http://www.wickedoast.net') WickedToast */
-        a(href='http://www.marcinmanek.com') Me 
-        a(href='/xml') RSS Feed
-        a(href='/about') about codesquares
-        - if (page > 0)
-            a(href='/'+((page*1)-1))= (page*1) - 1
-        a(href='/'+((page*1)+1))= (page*1) + 1
 
 - if (mode == 'index')
     script(type='text/javascript')
